@@ -6,7 +6,7 @@ from langchain_pinecone import PineconeVectorStore
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain.prompts import PromptTemplate
 from prompts.prompts import *
-from backend.sample import extract_and_remove_json
+from backend.sample import *
 from backend.sample import remove_json_comments
 
 load_dotenv()
@@ -93,7 +93,8 @@ def create_objects(query: str):
 }
         """
         csv_values = """
-        harry potter, J.K Rowling, 12.34,
+        Death on the Nile, Agatha Christie, 12.34,
+        James Bond, Ian Fleming, 23.43
         Man eaters of kumaon, Jim Corbett, 56.67,
         Let us C, Yashwant Kanetkar, 100
         """
@@ -120,7 +121,11 @@ def create_objects(query: str):
         # Ensure chain2 has the correct invoke method and pass the input correctly
         result = chain2.invoke(input_data)
 
-        return result
+        template_name = extract_value_from_json(template_json, "template_name")
+        object_json_list = extract_object_json(result.content)
+        object_json_list = update_key_in_json_list(object_json_list, "obj_template", template_name)
+        object_json_list = update_obj_name(object_json_list)
+        return object_json_list
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -128,17 +133,17 @@ def create_objects(query: str):
 
 
 if __name__ == "__main__":
-    # res = create_template(
-    #     # query="create template"
-    #     query="create template Library. The Library template has bookName bookAuthor bookRentPrice"
-    # )
-
-    res2 = create_objects(
-
-        query="""
-        Generate objects for template Library.
-        harry potter, J.K Rowling, 12.34
-        Man eaters of kumaon, Jim Corbett, 56.67
-        Let us C, Yashwant Kanetkar, 100
-    """
+    res = create_template(
+        # query="create template"
+        query="create template Library. The Library template has bookId(int) bookName bookAuthor bookRentPrice isIssued(bool)"
     )
+
+    # res2 = create_objects(
+    #
+    #     query="""
+    #     Generate objects for template Library.
+    #     harry potter, J.K Rowling, 12.34
+    #     Man eaters of kumaon, Jim Corbett, 56.67
+    #     Let us C, Yashwant Kanetkar, 100
+    # """
+    # )

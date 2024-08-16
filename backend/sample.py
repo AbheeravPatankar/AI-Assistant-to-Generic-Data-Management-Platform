@@ -1,4 +1,79 @@
 import re
+import json
+
+
+def update_obj_name(json_strings):
+
+    updated_json_strings = []
+
+    for index, json_str in enumerate(json_strings):
+        try:
+            # Load the JSON data into a Python dictionary
+            data = json.loads(json_str)
+
+            # Update the 'obj_name' key with a new value
+            data['obj_name'] = f"obj{index + 1}"
+
+            # Convert the updated dictionary back to a JSON string
+            updated_json_str = json.dumps(data, indent=4)
+            updated_json_strings.append(updated_json_str)
+        except json.JSONDecodeError:
+            # Handle invalid JSON
+            print(f"Invalid JSON data: {json_str}")
+            updated_json_strings.append(json_str)
+
+    return updated_json_strings
+
+
+
+def update_key_in_json_list(json_list, key, new_value):
+    updated_json_list = []
+
+    for json_str in json_list:
+        try:
+            # Load the JSON data into a Python dictionary
+            data = json.loads(json_str)
+
+            # Update the value for the specified key
+            data[key] = new_value
+
+            # Convert the updated dictionary back to a JSON string
+            updated_json_str = json.dumps(data, indent=4)
+            updated_json_list.append(updated_json_str)
+        except json.JSONDecodeError:
+            # Handle invalid JSON
+            print(f"Invalid JSON data: {json_str}")
+            updated_json_list.append(json_str)
+
+    return updated_json_list
+
+
+def extract_value_from_json(json_str, key):
+
+    try:
+        # Load the JSON data into a Python dictionary
+        data = json.loads(json_str)
+
+        # Extract and return the value for the specified key
+        return data.get(key, None)
+    except json.JSONDecodeError:
+        # Handle invalid JSON
+        print("Invalid JSON data")
+        return None
+
+
+def extract_object_json(text):
+    pattern = r'\$\$([\s\S]*?)\$\$'
+
+    # Find all matches
+    matches = re.findall(pattern, text)
+
+    # Strip leading/trailing whitespace from each match
+    raw_json_list = [match.strip() for match in matches]
+
+    return raw_json_list
+
+
 
 
 def remove_json_comments(json_str):

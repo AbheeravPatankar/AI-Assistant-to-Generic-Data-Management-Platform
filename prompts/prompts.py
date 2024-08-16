@@ -29,16 +29,24 @@ create_template_prompt = """
 
 create_object_from_template = """
     Only use the below JSON to create object json.
-    This is the template JSON.
-    {template JSON}
-    The object shall be created using the below given JSON format
-    {OBJECT_JSON_format} 
-    Also refer to the below documentation to create object JSONs using the template JSON
-    {documentation}
+    The OBJECT_JSON shall be created using the below given JSON format
+    {OBJECT_JSON_format}.
+    To fill the OBJECT_JSON refer to the below template json.
+    {template JSON}.
+    Use the template JSON to fill the "obj_template" key and the "name" key.
+    The value for the key "obj_template" must be left blank.
+    The value for the key "obj_name" must be left blank.
+    The "name" key should have the value for the key "attribute_name" from the template JSON.
+    Fill the "val" key using the csv data.
     Generate object JSONs for the following comma separated values.
     {csv}
+    Also refer to the below documentation to create object JSONs using the template JSON
+    {documentation}
     Generate a JSON for each csv line. 
     Output multiple JSONs if there are more than one lines with csv entries.
+    DO NOT OUTPUT A PYTHON CODE. ONLY OUTPUT THE JSON FOR EACH CSV LINE.
+    START EACH JSON WITH a '$$' sign and end each JSON with '$$' sign. 
+    ALSO FORMAT THE JSON PROPERLY.
 """
 
 OBJECT_JSON_format = """
