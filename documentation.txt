@@ -1,0 +1,99 @@
+The process for using the application is divided into 4 different actions
+1> Create Template – the schema for the input data is designed
+2> Attach attribute expressions - the expression that generate values for a particular attribute
+3> Create Objects which are instances of a template
+4>Attaching template level expressions
+5>Expression evaluation and result stage
+
+
+1>Schema definition Stage
+Action : Create Template
+A] Create Template
+The template to receive input data is created in this stage. The template has the following attributes
+1>The template contains a string property “template_nam”e which defines the name of the template 
+2>It is has a list of attributes
+3>Every attribute has 2 properties 
+	a) “attribute_name” – The name of the attribute
+	b)”attribute_type” – The data type for the attribute (could be string ,int,float,double,custom)
+	c)”expression” – The expression that needs to be evaluated to generate the value for the 	attribute (could be null)
+4>List of Expressions
+3>Every Expression has 4 properties 
+	a) “dataType” – Return type after evaluation expression
+	b)”name” – The name of the expression
+	c)” expressionString” – The actual expression string which needs to be evaluated
+	d)”type” – Type of the expression (could be Arithmetic or Conditional)
+
+
+Example of template JSON is :
+
+{
+  "template_name": "",
+  "attributes": [
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    }
+  ],
+  "expressionList": [
+    {
+      "dataType": "",
+      "name": "",
+      "expressionString": "",
+      "type": ""
+    }
+  ]
+}
+
+
+The expression List for a particular template could be empty
+In order to create a template in the backend the url "http//:8080/create/template" must be called with JSON of the above format in the request body
+
+
+2] Attach objects which are instances of a particular template
+Action : Create Objects
+Procedure to create objects for a particular template
+Step 1] Identify the template name that the objects are going to follow
+step 2] Get the template JSON from the database
+step 3] Generate the object JSON by referring to the template JSON
+Below is the format for the OBJECT JSON.
+{
+  "obj_template": "",
+  "obj_name": "",
+  "attributes": [
+    {
+      "val": ,
+      "name": "",
+
+    },
+    {
+      "val": "",
+      "name": "",
+
+    },
+    {
+      "val": ,
+      "name": "",
+
+    }
+  ]
+}
+The JSON contains:
+1]"obj_template"  The name of the template that the object refers to
+2]"obj_template"  The name of the instance or object
+3]"attributes" This is a list of attributes
+    The attribute has 2 properties
+    1] "name" The name of the attribute (NOTE : must be filled with the same value that is in the template JSON with the key "attribute_name")
+    2] "val" : The value that the attribute holds (must be filled using the comma separated input in the prompt)
+
+In this JSON format the value for the "name" key stays the same as the value of the "attribute_name" key in the template JSON.The value for the key "val" is determined from the input.
