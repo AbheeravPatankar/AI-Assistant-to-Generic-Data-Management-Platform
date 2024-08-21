@@ -1,0 +1,54 @@
+1>Schema definition Stage
+Action : Create Template
+A] Create Template
+The template to receive input data is created in this stage. The template has the following attributes
+1>The template contains a string property “template_nam”e which defines the name of the template
+2>It is has a list of attributes
+3>Every attribute has 2 properties
+	a) “attribute_name” – The name of the attribute
+	b) ”attribute_type” – The data type for the attribute (could be string ,int,float,double,custom)
+	c) ”expression” – The expression that needs to be evaluated to generate the value for the 	attribute (could be null)
+4>List of Expressions
+3>Every Expression has 4 properties
+	a) “dataType” – Return type after evaluation expression
+	b)”name” – The name of the expression
+	c)” expressionString” – The actual expression string which needs to be evaluated
+	d)”type” – Type of the expression (could be Arithmetic or Conditional)
+
+
+Example of template JSON is :
+
+{
+  "template_name": "",
+  "attributes": [
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    }
+  ],
+  "expressionList": [
+    {
+      "dataType": "",
+      "name": "",
+      "expressionString": "",
+      "type": ""
+    }
+  ]
+}
+NOTE:
+The attribute_type property cannot be null in the JSON. This property is decided by the llm judging at the attribute_name
+property.
+
+The expression List for a particular template could be empty
+In order to create a template in the backend the url "http//:8080/create/template" must be called with JSON of the above format in the request body

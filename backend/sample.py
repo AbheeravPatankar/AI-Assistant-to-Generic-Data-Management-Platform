@@ -73,19 +73,17 @@ def extract_object_json(text):
 
     return raw_json_list
 
+def parse_csv(input_text):
+    # Use regular expression to find all values between $ signs
+    csv_values = re.findall(r'\$(.*?)\$', input_text)
 
+    # Join these values with a newline character to create the CSV string
+    csv_string = "\n".join(csv_values)
 
+    return csv_string
 
 def remove_json_comments(json_str):
-    """
-    Remove comments from JSON string.
 
-    Args:
-        json_str (str): The JSON string with comments.
-
-    Returns:
-        str: The JSON string without comments.
-    """
     # Remove single-line comments
     json_str = re.sub(r"//.*", "", json_str)
 

@@ -21,6 +21,7 @@ tqdm = "*"
 langchain-pinecone = "*"
 langchain-openai = "*"
 langchain-community = "*"
+langchain-groq = "*"
 
 [dev-packages]
 

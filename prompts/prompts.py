@@ -1,53 +1,50 @@
 get_template_name_prompt = """
-    Answer any use questions based solely on the context below:
-    {documentation}
-    Do not generate the JSON body if template information or object information does not exist.
-    Answer the question only in the given format
-    template_name: (The name of the template for which the objects are to be created)
-    csv_values: (The comma separated object information.)
-    Generate the above input using the following input.
-    {question} 
-    If enough information is not available prompt the user to provide more information.
-    Do not make up a response.
+    From the given query generate response by identifying the template name and extracting the COMMA SEPARATED VALUES.
+    Generate response only from the information provided in the query given below.
+    {input}
+    Generate response only in the below given format:
+    template name: 
+    CSV values : (could be multiple lines)
+    Use a '$' sign at the start of every csv line and end the line with a '$' sign. Put the $ sign after every line not 
+    after every comma separated value. 
+    Use the above output format for all the csv lines 
+    Do not make up a response if adequate information is not available in the prompt. 
 """
 
-create_template_prompt = """
-    Answer any use questions based solely on the context below:
-    Do not generate the JSON body if template information does not exist. 
+create_template_prompt = """  
+    Answer any user questions based solely on the context below:
     {documentation}
-    Try to answer the question in this format
-    Description:
-    JSON body: The attribute_type is decided based on the attribute_name.
-    Question: {question}
-    Generate the JSON body if enough information is available.
-    Do not fill the JSON body if information is unavailable instead prompt the user to feed more information.
-    Do not assign attributes to the expression list or the expression attribute until not specified.
-    The attribute_type property cannot be null in the JSON.This property is decided by the llm judging at the attribute_name 
-    property.
+    Question: {question} 
+    Strictly generate a response only in the following format:
+    Action: (The Action mentioned in the documentation)
+    JSON body : The JSON created from the information provided in the prompt.
+    Description :  description of the action
+    The response generated should only follow the above format.
 """
 
 
 create_object_from_template = """
-    Only use the below JSON to create object json.
-    The OBJECT_JSON shall be created using the below given JSON format
-    {OBJECT_JSON_format}.
     To fill the OBJECT_JSON refer to the below template json.
     {template JSON}.
-    Use the template JSON to fill the "obj_template" key and the "name" key.
-    The value for the key "obj_template" must be left blank.
-    The value for the key "obj_name" must be left blank.
-    The "name" key should have the value for the key "attribute_name" from the template JSON.
-    Fill the "val" key using the csv data.
     Generate object JSONs for the following comma separated values.
     {csv}
-    Also refer to the below documentation to create object JSONs using the template JSON
+    Refer to the below documentation to create object JSONs using the template JSON
     {documentation}
+    To create OBJECT JSONs use the below given JSON format.
+    {OBJECT_JSON_format}
     Generate a JSON for each csv line. 
     Output multiple JSONs if there are more than one lines with csv entries.
     DO NOT OUTPUT A PYTHON CODE. ONLY OUTPUT THE JSON FOR EACH CSV LINE.
     START EACH JSON WITH a '$$' sign and end each JSON with '$$' sign. 
     ALSO FORMAT THE JSON PROPERLY.
 """
+
+sample_template = """Answer the users question only based on the below context
+    {documentation}
+    This is the question
+    {question}
+"""
+
 
 OBJECT_JSON_format = """
     {

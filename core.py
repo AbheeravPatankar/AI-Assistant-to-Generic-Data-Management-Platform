@@ -8,19 +8,16 @@ from langchain.prompts import PromptTemplate
 from prompts.prompts import *
 from backend.sample import *
 from backend.sample import remove_json_comments
-
+from langchain_groq import ChatGroq
 load_dotenv()
 
 # Define the template for the prompt
 # Initialize the embeddings and vector store
 embeddings = OllamaEmbeddings(model="llama3")
-documentation = PineconeVectorStore(
-    index_name=os.getenv("INDEX_NAME"), embedding=embeddings
-)
 
 # Initialize the language model
-llm = ChatOllama(model="llama3")
-
+#llm = ChatOllama(model="llama3")
+llm = ChatGroq(model="llama3-8b-8192")
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
@@ -28,7 +25,9 @@ def format_docs(docs):
 
 def create_template(query: str):
     try:
-
+        documentation = PineconeVectorStore(
+            index_name=os.getenv("INDEX_NAME1"), embedding=embeddings
+        )
         prompt = PromptTemplate.from_template(create_template_prompt)
 
         chain = (
@@ -55,20 +54,21 @@ def create_template(query: str):
 
 def create_objects(query: str):
     try:
-
+        documentation = PineconeVectorStore(
+            index_name=os.getenv("INDEX_NAME2"), embedding=embeddings
+        )
         prompt1 = PromptTemplate.from_template(get_template_name_prompt)
 
         chain = (
                 {
-                    "documentation": documentation.as_retriever() | format_docs,
-                    "question": RunnablePassthrough(),
+                    "input": RunnablePassthrough(),
                 }
                 | prompt1
                 | llm
         )
         # Invoke the retrieval chain with the query
-        #result1 = chain.invoke(input={"input": query})
-        #print(result1.content)
+        result1 = chain.invoke(input={"input": query})
+        csv_values = parse_csv(result1.content)
         template_json = """
         {
   "template_name": "Library",
@@ -92,29 +92,23 @@ def create_objects(query: str):
   "expressionList": []
 }
         """
-        csv_values = """
-        Death on the Nile, Agatha Christie, 12.34,
-        James Bond, Ian Fleming, 23.43
-        Man eaters of kumaon, Jim Corbett, 56.67,
-        Let us C, Yashwant Kanetkar, 100
-        """
+
         prompt2 = PromptTemplate.from_template(create_object_from_template)
         chain2 = (
                 {
-                    "documentation": RunnablePassthrough(),
+                    "documentation": documentation.as_retriever() | format_docs,
                     "csv": RunnablePassthrough(),
-                    "OBJECT_JSON_format": RunnablePassthrough(),
-                    "template JSON": RunnablePassthrough()
+                    "template JSON": RunnablePassthrough(),
+                    "OBJECT_JSON_format": RunnablePassthrough()
                 }
                 | prompt2
                 | llm
         )
 
-        # Define your input data
+        #Define your input data
         input_data = {
-            "documentation": documentation.as_retriever() | format_docs,
-            "csv": csv_values,
             "OBJECT_JSON_format": OBJECT_JSON_format,
+            "csv": csv_values,
             "template JSON": template_json
         }
 
@@ -133,17 +127,20 @@ def create_objects(query: str):
 
 
 if __name__ == "__main__":
-    res = create_template(
-        # query="create template"
-        query="create template Library. The Library template has bookId(int) bookName bookAuthor bookRentPrice isIssued(bool)"
+    # res = create_template(
+    #     query="create Employee template. An Employee has ID firstName lastName age department salary(boolean)"
+    # )
+    # res = create_template(
+    #     query="Explain the procedure to create a template. Also explain the JSON format for the template."
+    # )
+    res2 = create_objects(
+        query="""
+        Generate objects for template Library.
+        Death on the Nile, Agatha Christie, 12.34,
+        James Bond, Ian Fleming, 23.43
+        Man eaters of kumaon, Jim Corbett, 56.67,
+        Let us C, Yashwant Kanetkar, 100
+    """
     )
 
-    # res2 = create_objects(
-    #
-    #     query="""
-    #     Generate objects for template Library.
-    #     harry potter, J.K Rowling, 12.34
-    #     Man eaters of kumaon, Jim Corbett, 56.67
-    #     Let us C, Yashwant Kanetkar, 100
-    # """
-    # )
+
