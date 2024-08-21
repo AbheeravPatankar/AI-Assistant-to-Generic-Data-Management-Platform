@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit.components.v1 import html
 from streamlit_chat import message
 from core import *
-
+from grpc_client import send_encrypted_request
 
 # Function to extract attributes and template name
 def extract_attributes_and_template(json_obj):
@@ -157,3 +157,4 @@ with col2:
         latest_json = st.session_state["response_json"][-1]   # JSON that is to be transferred
         route = "/create/template"                            # API route (currently hardcoded)
         # Pass the latest JSON and the route to the grpc layer to generate a request for the web application
+ send_encrypted_request(latest_json, route) #Calls the gRPC layer function to encrypt and send the data
