@@ -3,13 +3,14 @@ get_template_name_prompt = """
     Generate response only from the information provided in the query given below.
     {input}
     Generate response only in the below given format:
-    template name: 
+    Template name: 
     CSV values : (could be multiple lines)
     Use a '$' sign at the start of every csv line and end the line with a '$' sign. Put the $ sign after every line not 
     after every comma separated value. 
     Use the above output format for all the csv lines 
     Do not make up a response if adequate information is not available in the prompt. 
 """
+
 
 create_template_prompt = """  
     Answer any user questions based solely on the context below:
@@ -20,6 +21,42 @@ create_template_prompt = """
     JSON body : The JSON created from the information provided in the prompt.
     Description :  description of the action
     The response generated should only follow the above format.
+"""
+
+template = {
+  "template_name": "",
+  "attributes": [
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    },
+    {
+      "attribute_name": "",
+      "attribute_type": "",
+      "expression": ""
+    }
+  ],
+  "expressionList": [
+    {
+      "dataType": "",
+      "name": "",
+      "expressionString": "",
+      "type": ""
+    }
+  ]
+}
+
+attach_expression_template_prompt = """
+Fill the expression in the template json provided.
+The template is given below : 
+{template}
+Fill the expression property in the template json provided.
 """
 
 

@@ -52,6 +52,7 @@ def create_template(query: str):
         return None  # Return None if an error occurs
 
 
+
 def create_objects(query: str):
     try:
         documentation = PineconeVectorStore(
@@ -126,21 +127,110 @@ def create_objects(query: str):
         return None  # Return None if an error occurs
 
 
+
+def attach_expression(query: str):
+    try:
+        prompt1 = PromptTemplate.from_template(get_template_name_prompt)
+
+        chain = (
+                {
+                    "input": RunnablePassthrough(),
+                }
+                | prompt1
+                | llm
+        )
+        result1 = chain.invoke(input={"input": query})
+        # print(result1.content)
+        result_text = result1.content 
+        # Split the text by lines
+        lines = result_text.splitlines()
+
+        # Extract the line containing "TEMPLATE NAME:"
+        for line in lines:
+            if "Template name:" in line:
+                template_name = line.split("Template name:")[1].strip()
+                break
+
+        print(template_name)
+
+
+        template_json ={
+        "template_name": "Employee",
+        "attributes": [
+            {
+            "attribute_name": "ID",
+            "attribute_type": "int",
+            "expression": ""
+            },
+            {
+            "attribute_name": "firstName",
+            "attribute_type": "string",
+            "expression": ""
+            },
+            {
+            "attribute_name": "lastName",
+            "attribute_type": "string",
+            "expression": ""
+            },
+            {
+            "attribute_name": "age",
+            "attribute_type": "int",
+            "expression": ""
+            },
+            {
+            "attribute_name": "department",
+            "attribute_type": "string",
+            "expression": ""
+            },
+            {
+            "attribute_name": "baseSalary",
+            "attribute_type": "float",
+            "expression": ""
+            },
+            {
+            "attribute_name": "totalSalary",
+            "attribute_type": "double",
+            "expression": ""
+            }
+        ],
+        "expressionList": []
+        }
+        prompt1 = PromptTemplate.from_template(attach_expression_template_prompt)
+        # print(prompt1)
+        chain = (
+                {
+                    "input": RunnablePassthrough(),
+                    "template": RunnablePassthrough(),
+                }
+                | prompt1
+                | llm
+        )
+        input_data = {
+            "input": query,
+            "template": template_json
+        }
+        result1 = chain.invoke(input_data)
+        print(result1.content)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None  # Return None if an error occurs
+
 if __name__ == "__main__":
     # res = create_template(
-    #     query="create Employee template. An Employee has ID firstName lastName age department salary(boolean)"
+    #     query="create Employee template. An Employee has ID firstName lastName age totalSalary baseSalary(boolean)"
     # )
     # res = create_template(
     #     query="Explain the procedure to create a template. Also explain the JSON format for the template."
     # )
-    res2 = create_objects(
-        query="""
-        Generate objects for template Library.
-        Death on the Nile, Agatha Christie, 12.34,
-        James Bond, Ian Fleming, 23.43
-        Man eaters of kumaon, Jim Corbett, 56.67,
-        Let us C, Yashwant Kanetkar, 100
-    """
-    )
+    # res2 = create_objects(
+    #     query="""
+    #     Generate objects for template Library.
+    #     Death on the Nile, Agatha Christie, 12.34,
+    #     James Bond, Ian Fleming, 23.43
+    #     Man eaters of kumaon, Jim Corbett, 56.67,
+    #     Let us C, Yashwant Kanetkar, 100
+    # """
+    # )
+    res3 = attach_expression(query="""Attach the expression totalSalary = baseSalary * 100""")
 
 
