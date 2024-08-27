@@ -129,91 +129,77 @@ def create_objects(query: str):
 
 
 def attach_expression(query: str):
-    try:
+    # try:
         prompt1 = PromptTemplate.from_template(get_template_name_prompt)
 
         chain = (
-                {
-                    "input": RunnablePassthrough(),
-                }
-                | prompt1
-                | llm
+            {
+                "input": RunnablePassthrough(),
+            }
+            | prompt1
+            | llm
         )
         result1 = chain.invoke(input={"input": query})
-        # print(result1.content)
-        result_text = result1.content 
-        # Split the text by lines
-        lines = result_text.splitlines()
+        result_text = result1.content
 
-        # Extract the line containing "TEMPLATE NAME:"
+        # Extract the template name from the output
+        lines = result_text.splitlines()
         for line in lines:
             if "Template name:" in line:
                 template_name = line.split("Template name:")[1].strip()
                 break
 
-        print(template_name)
-
-
-        template_json ={
-        "template_name": "Employee",
-        "attributes": [
-            {
-            "attribute_name": "ID",
-            "attribute_type": "int",
-            "expression": ""
-            },
-            {
-            "attribute_name": "firstName",
-            "attribute_type": "string",
-            "expression": ""
-            },
-            {
-            "attribute_name": "lastName",
-            "attribute_type": "string",
-            "expression": ""
-            },
-            {
-            "attribute_name": "age",
-            "attribute_type": "int",
-            "expression": ""
-            },
-            {
-            "attribute_name": "department",
-            "attribute_type": "string",
-            "expression": ""
-            },
-            {
-            "attribute_name": "baseSalary",
-            "attribute_type": "float",
-            "expression": ""
-            },
-            {
-            "attribute_name": "totalSalary",
-            "attribute_type": "double",
-            "expression": ""
-            }
-        ],
-        "expressionList": []
+        template_json = {
+            "template_name": "Employee",
+            "attributes": [
+                {"attribute_name": "ID", "attribute_type": "int", "expression": ""},
+                {"attribute_name": "firstName", "attribute_type": "string", "expression": ""},
+                {"attribute_name": "lastName", "attribute_type": "string", "expression": ""},
+                {"attribute_name": "age", "attribute_type": "int", "expression": ""},
+                {"attribute_name": "department", "attribute_type": "string", "expression": ""},
+                {"attribute_name": "baseSalary", "attribute_type": "float", "expression": ""},
+                {"attribute_name": "totalSalary", "attribute_type": "double", "expression": ""}
+            ],
+            "expressionList": []
         }
-        prompt1 = PromptTemplate.from_template(attach_expression_template_prompt)
-        # print(prompt1)
+
+        prompt2 = PromptTemplate.from_template(attach_expression_template_prompt)
         chain = (
-                {
-                    "input": RunnablePassthrough(),
-                    "template": RunnablePassthrough(),
-                }
-                | prompt1
-                | llm
+            {
+                "input": RunnablePassthrough(),
+                "template": RunnablePassthrough(),
+            }
+            | prompt2
+            | llm
         )
+
         input_data = {
             "input": query,
             "template": template_json
         }
-        result1 = chain.invoke(input_data)
-        print(result1.content)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None  # Return None if an error occurs
+
+        result2 = chain.invoke(input_data)
+
+        json_with_comment, response = extract_and_remove_json(
+            result2.content, "JSON Body:"
+        )
+
+        json_without_comment = remove_json_comments(json_with_comment)
+        json_dict = json.loads(json_without_comment)
+
+        # Remove the "input" key if it exists
+        if "input" in json_dict:
+            del json_dict["input"]
+
+        # Convert the dictionary back to JSON string
+        final_json = json.dumps(json_dict, indent=4)
+        
+        print(final_json)
+        return final_json, response
+        
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
+    #     return None  # Return None if an error occurs
 
 if __name__ == "__main__":
     # res = create_template(

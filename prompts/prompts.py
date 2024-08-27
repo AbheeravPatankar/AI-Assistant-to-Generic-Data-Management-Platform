@@ -56,7 +56,9 @@ attach_expression_template_prompt = """
 Fill the expression in the template json provided.
 The template is given below : 
 {template}
-Fill the expression property in the template json provided.
+Strictly generate a response only in the following format:
+    JSON body : The JSON created from the information provided in the prompt.
+    The response generated should only follow the above format.
 """
 
 
