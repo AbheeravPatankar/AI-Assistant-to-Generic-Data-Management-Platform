@@ -3,7 +3,6 @@ import json
 
 
 def update_obj_name(json_strings):
-
     updated_json_strings = []
 
     for index, json_str in enumerate(json_strings):
@@ -12,7 +11,7 @@ def update_obj_name(json_strings):
             data = json.loads(json_str)
 
             # Update the 'obj_name' key with a new value
-            data['obj_name'] = f"obj{index + 1}"
+            data['object_name'] = f"obj{index + 1}"
 
             # Convert the updated dictionary back to a JSON string
             updated_json_str = json.dumps(data, indent=4)
@@ -24,6 +23,37 @@ def update_obj_name(json_strings):
 
     return updated_json_strings
 
+
+def key_exists(json_obj, key_to_find):
+    # If the JSON object is a dictionary, check its keys
+    if isinstance(json_obj, dict):
+        if key_to_find in json_obj:
+            return True  # Key found
+        # Recursively check in each value
+        for value in json_obj.values():
+            if key_exists(value, key_to_find):
+                return True
+    return False
+
+
+def get_first_key(json_data):
+    json_data = json.loads(json_data)
+    if isinstance(json_data, dict):
+
+        return list(json_data.keys())[0]
+    else:
+        return None
+
+
+def find_text_after_token(text, token):
+    pattern = f"{token}:\s*(.*)"
+
+    # Find all matches in the text
+    matches = re.findall(pattern, text)
+
+    # Print the matches
+    for match in matches:
+        return match
 
 
 def update_key_in_json_list(json_list, key, new_value):
@@ -49,7 +79,6 @@ def update_key_in_json_list(json_list, key, new_value):
 
 
 def extract_value_from_json(json_str, key):
-
     try:
         # Load the JSON data into a Python dictionary
         data = json.loads(json_str)
@@ -73,6 +102,7 @@ def extract_object_json(text):
 
     return raw_json_list
 
+
 def parse_csv(input_text):
     # Use regular expression to find all values between $ signs
     csv_values = re.findall(r'\$(.*?)\$', input_text)
@@ -82,8 +112,8 @@ def parse_csv(input_text):
 
     return csv_string
 
-def remove_json_comments(json_str):
 
+def remove_json_comments(json_str):
     # Remove single-line comments
     json_str = re.sub(r"//.*", "", json_str)
 
@@ -115,7 +145,7 @@ def extract_and_remove_json(input_string, token):
         return None, input_string
 
     # Extract the JSON substring
-    json_string = input_string[json_start_index : json_end_index + 1].strip()
+    json_string = input_string[json_start_index: json_end_index + 1].strip()
 
     # Find and preserve the "action:" and "description:" tags
     action_tag = "Action:"
@@ -136,7 +166,7 @@ def extract_and_remove_json(input_string, token):
         if action_end_index == -1:
             action_end_index = len(input_string)
         preserved_text += (
-            input_string[action_index : action_end_index + 1].strip() + "\n"
+                input_string[action_index: action_end_index + 1].strip() + "\n"
         )
 
     if description_index != -1:
@@ -145,11 +175,11 @@ def extract_and_remove_json(input_string, token):
         if description_end_index == -1:
             description_end_index = len(input_string)
         preserved_text += (
-            input_string[description_index : description_end_index + 1].strip() + "\n"
+                input_string[description_index: description_end_index + 1].strip() + "\n"
         )
 
     # Remove the JSON body and everything before it from the original input string
-    text_after_json = input_string[json_end_index + 1 :].strip()
+    text_after_json = input_string[json_end_index + 1:].strip()
 
     # Combine preserved text with text after JSON
     result_text = preserved_text + text_after_json

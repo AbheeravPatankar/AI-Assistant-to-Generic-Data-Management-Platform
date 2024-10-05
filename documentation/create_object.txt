@@ -1,24 +1,25 @@
 2] Attach objects which are instances of a particular template
 Action : Create Objects
 
+
 Below is the format for the OBJECT JSON.
 {
-  "obj_template": "",
-  "obj_name": "",
+  "template_name": "",
+  "object_name": "",
   "attributes": [
     {
-      "val": ,
-      "name": "",
+      "attribute_value": ,
+      "attribute_name": "",
 
     },
     {
-      "val": "",
-      "name": "",
+      "attribute_value": "",
+      "attribute_name": "",
 
     },
     {
-      "val": ,
-      "name": "",
+      "attribute_value": ,
+      "attribute_name": "",
 
     }
   ]
@@ -29,12 +30,12 @@ NOTE: Only the above given format must be used for generating object JSONS and d
 
 The above JSON format must be considered  before creating objects
 The JSON contains:
-1]"obj_template"  : This property should be null.
-2]"obj_template"  This property should be null.DO NOT ASSIGN THIS PROPERTY WITH ANY VALUE
+1]"template_name"  : This property should be null.
+2]"object_name"  This property should be null.DO NOT ASSIGN THIS PROPERTY WITH ANY VALUE
 3]"attributes" This is a list of attributes
     The attribute has 2 properties
-    1] "name" The name of the attribute (NOTE : must be filled with the same value that is in the template JSON with the key "attribute_name")
-    2] "val" : The value that the attribute holds (must be filled using the comma separated input in the prompt)
+    1] "attribute_name" The name of the attribute (NOTE : must be filled with the same value that is in the template JSON with the key "attribute_name")
+    2] "attribute_value" : The value that the attribute holds (must be filled using the comma separated input in the prompt)
 
 In this JSON format the value for the "name" key stays the same as the value of the "attribute_name" key in the template
 JSON.The value for the key "val" is determined from the input.

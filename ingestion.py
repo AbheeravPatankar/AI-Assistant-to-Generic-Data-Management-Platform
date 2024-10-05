@@ -7,10 +7,9 @@ from langchain_community.embeddings import OllamaEmbeddings
 
 load_dotenv()
 
-
 if __name__ == "__main__":
     print("Hello world vector-dbs")
-    loader = TextLoader("/documentation/create_object.txt")
+    loader = TextLoader("/home/abheeravsubuntu/documentation-helper/documentation/create_object.txt")
     document = loader.load()
     print("Splitting....")
     text_splitter = CharacterTextSplitter(chunk_size=600, chunk_overlap=50)
@@ -22,6 +21,6 @@ if __name__ == "__main__":
     print(embeddings)
     print("ingesting....")
     PineconeVectorStore.from_documents(
-        texts, embeddings, index_name=os.environ["INDEX_NAME1"]
+        texts, embeddings, index_name=os.environ["INDEX_NAME"], namespace="create object"
     )
     print("done!")

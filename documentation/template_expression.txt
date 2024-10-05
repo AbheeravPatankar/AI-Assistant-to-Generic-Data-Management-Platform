@@ -1,0 +1,40 @@
+Action : Attach Template Expression
+Template Expression are expression that the user can execute any time and any number of times. These expressions are of 2 types
+1>Conditional
+2>Arithmetic
+
+Conditional expressions basically are comparison expressions which use operators like == ,!=, >, <, >= and <=. The result
+of these expression is always true or false.
+Arithmetic expression are expression which produce numeric values as result. These expressions use operators such as +,-
+* and /.
+
+Conditional Expressions:
+The API takes JSON which represents the conditional expression that must be attached to the template.
+The JSON is of the following format.
+{
+	"name": "",
+	"expressionString": "",
+	"type": "Conditional",
+	"dataType": ""
+}
+name : The name of the expression
+expressionString : The conditional expression containing the above mentioned operators.
+type : The type of the expression (conditional/arithmetic) in this case it is always conditional.
+datatype : The type that is being compared.(int,char,string,float,boolean).
+
+Arithmetic Expressions:
+The API takes JSON which represents the conditional expression that must be attached to the template.
+The JSON is of the following format.
+{
+	"name": "",
+	"expressionString": "",
+	"type": "Arithmetic",
+	"dataType": "float"
+}
+name : The name of the expression
+expressionString : The conditional expression containing the above mentioned operators.
+type : The type of the expression (conditional/arithmetic) in this case it is always arithmetic.
+datatype : The type that is being compared. In this case it is always float.
+
+The url that is called to attach the template expression is /template/attachTemplateExpression/{templateName} with a
+JSON body.
