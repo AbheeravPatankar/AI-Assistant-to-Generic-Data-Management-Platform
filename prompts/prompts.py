@@ -53,12 +53,14 @@ template = {
 }
 
 attach_expression_template_prompt = """
-Fill the expression in the template json provided.
+Fill the expression in the template json provided. Do not modify the template. Only fill the template with the values.
 The template is given below : 
 {template}
 Strictly generate a response only in the following format:
+    Action: 
     JSON body : The JSON created from the information provided in the prompt.
-    The response generated should only follow the above format.
+    Description :  description of the action
+Do not add unnecessary expressions where not asked to.
 """
 
 
@@ -82,6 +84,14 @@ sample_template = """Answer the users question only based on the below context
     {documentation}
     This is the question
     {question}
+"""
+
+sample_template_2 = """Do as the user says 
+    This is the question
+    {question}
+    This is the input
+    {input}
+    Do not add uncessary pleasantries. Reply in a way that you are talking to the human. Only output the entire summary.
 """
 
 
